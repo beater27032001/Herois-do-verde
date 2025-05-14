@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Heróis do Verde</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      max-width: 1000px;
+      margin: auto;
+      padding: 2rem;
+      background-image: url('./fundo.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: #2e7d32;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ffffff;
+      font-size: 5rem;
+      text-shadow: 2px 2px 20px #000000;
+    }
+
+    #question {
+      font-size: 2rem;
+    }
+
+    .question-box {
+      background: rgba(216, 234, 221, 0.95);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .options {
+      margin-top: 1.5rem;
+    }
+
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 0.75rem 0;
+      padding: 1rem;
+      border: 2px solid #388e3c;
+      background: #c8e6c9;
+      color: #1b5e20;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .options button:hover {
+      background: #81c784;
+      transform: scale(1.02);
+    }
+
+    .result {
+      margin-top: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .victory-img {
+      display: block;
+      margin: 2rem auto;
+      max-width: 80%;
+      border-radius: 15px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+    }
+
+    #nextBtn {
+      display: block;
+      margin: 2rem auto 0;
+      padding: 1rem 2rem;
+      background-color: #66bb6a;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    #nextBtn:hover {
+      background-color: #388e3c;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Heróis do Verde</h1>
+  <div class="question-box">
+    <div id="question">Carregando pergunta...</div>
+    <div class="options" id="options"></div>
+    <div class="result" id="result"></div>
+    <button onclick="nextQuestion()" id="nextBtn" class="hidden">Próxima Pergunta</button>
+  </div>
+
+  <script>
+    const perguntasOriginais = [
+      {
+        question: "Qual dessas ações ajuda o meio ambiente?",
+        options: ["Jogar lixo no rio", "Plantar uma árvore", "Deixar a torneira aberta", "Cortar todas as árvores"],
+        answer: 1
+      },
+      {
+        question: "Qual o destino correto para uma garrafa plástica?",
+        options: ["No lixo comum", "No vaso de planta", "Na coleta seletiva", "No mar"],
+        answer: 2
+      },
+      {
+        question: "O que economiza mais água?",
+        options: ["Tomar banhos curtos", "Lavar calçada com mangueira", "Deixar a torneira pingando", "Brincar na chuva"],
+        answer: 0
+      },
+      {
+        question: "Qual a melhor forma de economizar energia elétrica?",
+        options: ["Deixar luzes acesas", "Desligar aparelhos não utilizados", "Usar ar-condicionado o dia todo", "Dormir com a TV ligada"],
+        answer: 1
+      },
+      {
+        question: "Qual atitude ajuda a natureza?",
+        options: ["Reciclar o lixo", "Queimar lixo", "Desmatar", "Poluir o rio"],
+        answer: 0
+      },
+      {
+        question: "Por que plantar árvores é importante?",
+        options: ["Aumenta a poluição", "Ajuda a melhorar o ar", "Gasta muita água", "Deixa o planeta mais quente"],
+        answer: 1
+      },
+      {
+        question: "O que podemos fazer com papel usado?",
+        options: ["Jogar fora", "Queimar", "Reciclar", "Comer"],
+        answer: 2
+      },
+      {
+        question: "Qual desses é um material reciclável?",
+        options: ["Casca de banana", "Papelão", "Restos de comida", "Guardanapo sujo"],
+        answer: 1
+      },
+      {
+        question: "Qual atitude ajuda a natureza?",
+        options: ["Reutilizar sacolas plásticas", "Jogar lixo na rua", "Usar copo descartável todo dia", "Cortar todas as árvores"],
+        answer: 0
+      },
+      {
+        question: "O que devemos fazer com o lixo?",
+        options: ["Jogar em qualquer lugar", "Separar e reciclar", "Queimar no quintal", "Guardar embaixo da cama"],
+        answer: 1
+      },
+      {
+        question: "Qual dessas ações ajuda os animais?",
+        options: ["Destruir florestas", "Poluir os rios", "Preservar a natureza", "Caçar por diversão"],
+        answer: 2
+      },
+      {
+        question: "Por que é importante economizar água?",
+        options: ["Porque é cara", "Porque é divertida", "Porque é um recurso limitado", "Porque molha"],
+        answer: 2
+      },
+      {
+        question: "O que podemos fazer para ajudar o planeta?",
+        options: ["Plantar árvores", "Poluir rios", "Deixar luz acesa", "Jogar lixo no chão"],
+        answer: 0
+      },
+      {
+        question: "O que ajuda a salvar o planeta?",
+        options: ["Reciclar", "Poluir", "Queimar tudo", "Jogar lixo em rios"],
+        answer: 0
+      },
+      {
+        question: "O que devemos fazer ao sair de um cômodo?",
+        options: ["Acender a luz", "Deixar a TV ligada", "Desligar a luz", "Abrir a geladeira"],
+        answer: 2
+      },
+
+    ];
+
+
+    while (perguntasOriginais.length < 30) {
+      perguntasOriginais.push(...perguntasOriginais.slice(0, 30 - perguntasOriginais.length));
+    }
+
+    let perguntas = [...perguntasOriginais];
+    let perguntasSelecionadas = [];
+    let current = 0;
+    let correct = 0;
+
+    function embaralhar(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function iniciarJogo() {
+      embaralhar(perguntas);
+      perguntasSelecionadas = perguntas.slice(0, 7);
+      current = 0;
+      correct = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      document.getElementById('result').textContent = '';
+      document.getElementById('nextBtn').classList.add('hidden');
+      const q = perguntasSelecionadas[current];
+      document.getElementById('question').textContent = q.question;
+      const optionsDiv = document.getElementById('options');
+      optionsDiv.innerHTML = '';
+
+      q.options.forEach((opt, index) => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.onclick = () => selectAnswer(index);
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(index) {
+      const isCorrect = index === perguntasSelecionadas[current].answer;
+      if (isCorrect) {
+        correct++;
+        document.getElementById('result').textContent = "Resposta correta!";
+        document.getElementById('result').style.color = "#2e7d32"; // original green color
+      } else {
+        document.getElementById('result').textContent = "Resposta incorreta.";
+        document.getElementById('result').style.color = "red";
+      }
+      document.getElementById('nextBtn').classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      current++;
+      if (current < 7) {
+        showQuestion();
+      } else {
+        const percent = (correct / 7) * 100;
+        const venceu = percent >= 70;
+        const final = venceu
+          ? "Parabéns! Os Heróis do Verde salvaram o planeta!"
+          : "Oh não! O herói falhou, mas pode tentar de novo!";
+        const image = venceu
+          ? '<img src="Win.jpg" alt="Vitória" class="victory-img">'
+          : '';
+        document.querySelector('.question-box').innerHTML = `
+          <h2>${final}</h2>
+          ${image}
+          <p>Acertos: ${correct} de 7 (${percent.toFixed(0)}%)</p>
+        `;
+      }
+    }
+
+    iniciarJogo();
+  </script>
+</body>
+
+</html>
